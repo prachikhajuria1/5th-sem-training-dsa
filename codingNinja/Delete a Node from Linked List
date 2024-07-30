@@ -1,0 +1,97 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+
+// Definition for singly-linked list node.
+struct Node {
+    int val;
+    Node* next;
+    Node(int x) : val(x), next(nullptr) {}
+};
+
+// Function to delete a node at a given position
+Node* deleteNode(Node* head, int pos) {
+    // If the list is empty, return nullptr
+    if (head == nullptr) {
+        return nullptr;
+    }
+
+    // If position is 0, delete the head
+    if (pos == 0) {
+        Node* newHead = head->next;
+        delete head;
+        return newHead;
+    }
+
+    Node* current = head;
+    Node* prev = nullptr;
+    int currentPos = 0;
+
+    // Traverse to the node at position 'pos'
+    while (current != nullptr && currentPos < pos) {
+        prev = current;
+        current = current->next;
+        currentPos++;
+    }
+
+    // If position is out of bounds, return the original list
+    if (current == nullptr) {
+        return head;
+    }
+
+    // Delete the node at position 'pos'
+    prev->next = current->next;
+    delete current;
+
+    return head;
+}
+
+// Helper function to print the linked list
+void printList(Node* head) {
+    while (head) {
+        cout << head->val << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+// Helper function to create a linked list from an array
+Node* createList(const vector<int>& values) {
+    if (values.empty()) return nullptr;
+
+    Node dummy(0);
+    Node* current = &dummy;
+
+    for (int value : values) {
+        current->next = new Node(value);
+        current = current->next;
+    }
+
+    return dummy.next;
+}
+
+// Main function to test deleteNode
+int main() {
+    // Create a test linked list: 1 -> 2 -> 3 -> 4 -> 5
+    vector<int> values = {1, 2, 3, 4, 5};
+    Node* head = createList(values);
+
+    cout << "Original list: ";
+    printList(head);
+
+    // Delete node at position 2 (third node)
+    head = deleteNode(head, 2);
+
+    cout << "List after deletion at position 2: ";
+    printList(head);
+
+    // Clean up memory
+    while (head) {
+        Node* next = head->next;
+        delete head;
+        head = next;
+    }
+
+    return 0;
+}
+
